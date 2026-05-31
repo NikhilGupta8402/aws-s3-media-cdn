@@ -1,0 +1,120 @@
+<div class="gallery-container">
+  <!-- HEADER -->
+  <div class="header-section">
+    <h1 class="title">Media Gallery</h1>
+
+    <p class="subtitle">Optimized CDN Media Gallery</p>
+  </div>
+
+  <!-- UPLOAD SECTION -->
+  <div class="upload-section">
+    <!-- SINGLE -->
+    <label class="upload-btn">
+      Upload Single File
+
+      <input type="file" hidden (change)="uploadSingleFile($event)" />
+    </label>
+
+    <!-- MULTIPLE -->
+    <label class="upload-btn secondary-btn">
+      Upload Multiple Files
+
+      <input
+        type="file"
+        hidden
+        multiple
+        (change)="uploadMultipleFiles($event)"
+      />
+    </label>
+  </div>
+
+  <!-- UPLOADING -->
+  <div class="uploading-text" *ngIf="uploading">Uploading Files...</div>
+
+  <!-- LOADING -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="loader"></div>
+  </div>
+
+  <!-- EMPTY -->
+  <div class="empty-state" *ngIf="!loading && mediaFiles.length === 0">
+    No Media Found
+  </div>
+
+  <!-- GALLERY -->
+  <div class="gallery-grid" *ngIf="!loading">
+    <div class="gallery-card" *ngFor="let media of mediaFiles">
+      <!-- DELETE BUTTON -->
+    <button
+        class="floating-delete-btn"
+        (click)="deleteFile(media.fileName!)">
+
+        ✕
+
+    </button>
+
+      <!-- IMAGE -->
+      <img
+        *ngIf="!isVideo(media.imageUrl)"
+        [src]="media.imageUrl"
+        loading="lazy"
+        class="gallery-image"
+        (click)="openPreview(media.imageUrl)"
+      />
+
+      <!-- VIDEO -->
+      <video *ngIf="isVideo(media.imageUrl)" class="gallery-image" controls>
+        <source [src]="media.imageUrl" type="video/mp4" />
+      </video>
+
+      <!-- OVERLAY -->
+      <div class="overlay">
+        <button class="view-btn" (click)="openPreview(media.imageUrl)">
+          Preview
+        </button>
+      </div>
+
+      <!-- FILE INFO -->
+      <div class="media-info">
+        <div class="media-name">
+          {{ media.fileName }}
+        </div>
+
+        <div class="media-meta">
+          <span class="media-type">
+            {{ media.type }}
+          </span>
+
+          <span class="media-size">
+            {{ media.size }}
+          </span>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PREVIEW -->
+<div class="preview-modal" *ngIf="selectedImage">
+  <div class="preview-backdrop" (click)="closePreview()"></div>
+
+  <div class="preview-content">
+    <img
+      *ngIf="!isVideo(selectedImage)"
+      [src]="selectedImage"
+      class="preview-image"
+    />
+
+    <video
+      *ngIf="isVideo(selectedImage)"
+      class="preview-image"
+      controls
+      autoplay
+    >
+      <source [src]="selectedImage" type="video/mp4" />
+    </video>
+
+    <button class="close-btn" (click)="closePreview()">✕</button>
+  </div>
+</div>
